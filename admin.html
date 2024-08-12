@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח בקרה של מנהל</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .user-list { margin-bottom: 20px; }
+        .user-list table { width: 100%; border-collapse: collapse; }
+        .user-list th, .user-list td { border: 1px solid #ddd; padding: 8px; }
+        .user-list th { background-color: #f4f4f4; }
+        .action-form { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>לוח בקרה של מנהל</h1>
+    <div class="user-list">
+        <h2>רשימת משתמשים</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>שם משתמש</th>
+                    <th>סטטוס אישור</th>
+                    <th>פעולה</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ 'מאושר' if user.approved else 'לא מאושר' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin_dashboard') }}" style="display:inline;">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <select name="action">
+                                <option value="approve" {% if user.approved %}selected{% endif %}>אשר</option>
+                                <option value="disapprove" {% if not user.approved %}selected{% endif %}>לא מאושר</option>
+                                <option value="remove">הסר</option>
+                            </select>
+                            <button type="submit">בצע פעולה</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

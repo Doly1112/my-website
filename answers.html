@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תשובות למשחק - "Don't wake the Dragon"</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+        .discord-instruction {
+            background-color: #e1f5fe;
+            border: 1px solid #b3e5fc;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 100%;
+            box-sizing: border-box;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+        }
+        .discord-instruction a {
+            color: #0066cc;
+            text-decoration: underline;
+            flex: 1;
+            white-space: nowrap;
+        }
+        .main-content {
+            margin-left: 340px;
+            padding: 20px;
+            flex: 1;
+        }
+        .search-box {
+            text-align: center;
+            margin: 20px;
+        }
+        .search-box input {
+            width: 80%;
+            max-width: 600px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .subtitle {
+            text-align: center;
+            color: red;
+            text-decoration: underline;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: right;
+        }
+        li {
+            background-color: transparent;
+            border: none;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 600px;
+            word-wrap: break-word;
+        }
+        .answer {
+            color: blue;
+            font-weight: bold;
+        }
+        .highlight {
+            font-size: 1.2em;
+            color: red;
+            text-decoration: underline;
+        }
+        .credit {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin: 20px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: black;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="discord-instruction">
+            <a href="https://discord.com/invite/vMV4cr6gsc" target="_blank">לשרת הדיסקורד הטוב ביותר של מיקמק</a>
+        </div>
+    </div>
+    <div class="main-content">
+        <h1>תשובות למשחק - "Don't wake the Dragon"</h1>
+        <div class="subtitle">השאלות באתר הנ"ל הן שאלות של שלב מס' 1 בלבד.</div>
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="searchQuestions()" placeholder="חפש שאלה...">
+        </div>
+        <hr>
+        <ul id="questionsList"></ul>
+        <hr>
+        <footer>
+            <p class="credit">קרדיט: שאלות ותשובות מעודכנות</p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/static/answers_level1.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data loaded:', data);
+                    const list = document.getElementById('questionsList');
+                    const items = Array.isArray(data) ? data : [data];
+                    if (items.length > 0) {
+                        items.forEach(item => {
+                            const listItem = document.createElement('li');
+                            listItem.dataset.question = item.question;
+                            listItem.innerHTML = `<strong>שאלה:</strong> ${item.question} <br><strong class="answer">תשובה:</strong> ${item.answer}<br><br>`;
+                            list.appendChild(listItem);
+                        });
+                    } else {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = 'לא נמצאו שאלות.';
+                        list.appendChild(listItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading JSON:', error);
+                    const list = document.getElementById('questionsList');
+                    const listItem = document.createElement('li');
+                    listItem.textContent = 'שגיאה בטעינת הנתונים.';
+                    list.appendChild(listItem);
+                });
+        });
+
+        function searchQuestions() {
+            const input = document.getElementById('searchInput');
+            const filter = normalizeText(input.value).toUpperCase();
+            const ul = document.getElementById("questionsList");
+            const li = ul.getElementsByTagName('li');
+            Array.from(li).forEach(item => {
+                const questionText = normalizeText(item.dataset.question || "").toUpperCase();
+                item.style.display = questionText.includes(filter) ? "" : "none";
+            });
+        }
+
+        function normalizeText(text) {
+            // Remove punctuation, normalize whitespace, and remove diacritics
+            return text
+                .replace(/[^\w\s\u0590-\u05FF]/g, '')  // Keep Hebrew characters
+                .normalize('NFD')                     // Normalize Unicode characters
+                .replace(/[\u0300-\u036f]/g, '')      // Remove diacritics
+                .replace(/\s+/g, ' ');                // Normalize whitespace
+        }
+    </script>
+</body>
+</html>
