@@ -27,12 +27,25 @@
         <p id="error-message" class="error">שם משתמש או סיסמה לא נכונים</p>
     </div>
     <script>
+        // הגדרת שם המשתמש והסיסמה עבור ההתחברות לדוגמה
+        const validUsername = 'admin';
+        const validPassword = '1234';
+
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault(); // מונע את שליחת הטופס
 
-            // כאן נוכל להוסיף לוגיקה לבדוק את פרטי ההתחברות (למשל, עם AJAX)
-            // לצורך דוגמה, נניח שכל ההתחברויות נכשלות:
-            document.getElementById('error-message').style.display = 'block';
+            // אוסף את הנתונים מהטופס
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // בדיקת התחברות
+            if (username === validUsername && password === validPassword) {
+                // התחברות הצליחה, נווט לדף אחר (שנה לכתובת הרצויה)
+                window.location.href = '/home.html';
+            } else {
+                // התחברות נכשלה, הצג הודעת שגיאה
+                document.getElementById('error-message').style.display = 'block';
+            }
         });
     </script>
 </body>
