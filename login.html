@@ -6,22 +6,34 @@
     <title>התחברות</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        .error { color: red; }
+        .error { color: red; display: none; }
+        .login-container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; background: #f9f9f9; }
+        label { display: block; margin: 10px 0 5px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin: 5px 0 20px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; background-color: #007bff; color: #fff; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-    <h1>התחברות</h1>
-    <form method="POST" action="{{ url_for('login') }}">
-        <label for="username">שם משתמש:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">סיסמה:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">התחברות</button>
-    </form>
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+    <div class="login-container">
+        <h1>התחברות</h1>
+        <form id="loginForm">
+            <label for="username">שם משתמש:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">סיסמה:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">התחברות</button>
+        </form>
+        <p id="error-message" class="error">שם משתמש או סיסמה לא נכונים</p>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // מונע את שליחת הטופס
+
+            // כאן נוכל להוסיף לוגיקה לבדוק את פרטי ההתחברות (למשל, עם AJAX)
+            // לצורך דוגמה, נניח שכל ההתחברויות נכשלות:
+            document.getElementById('error-message').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
